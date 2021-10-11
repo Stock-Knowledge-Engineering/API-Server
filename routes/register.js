@@ -115,8 +115,9 @@ module.exports = function (app) {
         `{\"name\":\"${firstName} ${lastName}\", \"code\": \"${code}\"}`
       );
 
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.status(200);
+      const token = jwt.sign({username: email}, process.env.SECRET_KEY, {expiresIn: process.env.TOKEN_LIFESPAN})
+      res.cookie('token', token, {httpOnly: true})
+      
       res.json(
         Utilities.CreateResponse(
           result.length > 0 ? true : false,
@@ -177,7 +178,9 @@ module.exports = function (app) {
         })
     );
 
-    res.status(200);
+    const token = jwt.sign({username: email}, process.env.SECRET_KEY, {expiresIn: process.env.TOKEN_LIFESPAN})
+    res.cookie('token', token, {httpOnly: true})
+
     res.json(
       Utilities.CreateResponse(result ? true : false, result ? result : null)
     );

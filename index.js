@@ -52,7 +52,7 @@ const Room = require("./Room");
 const { CreateResponse } = require("./utilities.js");
 const { database } = require("./Database/Config");
 
-app.use(cors({credentials: true,  origin: 'http://localhost:3000' }));
+app.use(cors({credentials: true,  origin: [process.env.DOMAIN] }));
 app.use(bodyParser.json());
 
 Database.execute = function (callback) {
@@ -112,9 +112,10 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/login/auth", async (req, res) => {
+
   const { email, name } = req.body.data;
 
-  const token = jwt.sign({username: username}, process.env.SECRET_KEY, {expiresIn: process.env.TOKEN_LIFESPAN})
+  const token = jwt.sign({username: email}, process.env.SECRET_KEY, {expiresIn: process.env.TOKEN_LIFESPAN})
 
   let result = await Database.Execute((database) =>
     database
@@ -128,8 +129,6 @@ app.post("/login/auth", async (req, res) => {
   );
 
   res.cookie('token', token, {httpOnly: true})
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.status(200);
   res.json(
     Utilities.CreateResponse(
       result && result.length > 0 ? true : false,
@@ -139,16 +138,9 @@ app.post("/login/auth", async (req, res) => {
 });
 
 app.post("/logout", async (req, res) => {
-  const { userid } = req.body.data;
-
-  let clientIndex = clients.findIndex((client) => client.userid == userid);
-
-  clients.splice(clientIndex, 1);
-
   res.clearCookie('token')
   res.clearCookie('refrestToken')
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.status(200);
+
   res.json(Utilities.CreateResponse(true, null));
 });
 
@@ -176,8 +168,6 @@ app.get("/verify/verification-code", async (req, res) => {
       })
   );
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.status(200);
   res.json(Utilities.CreateResponse(result ? true : false, result));
 });
 
@@ -250,14 +240,12 @@ app.get("/calendar", async (req, res) => {
     parseInt(month)
   );
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.status(200);
+
   res.json(calendar);
 });
 
 app.get("/calendar/days", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.status(200);
+
   res.json(await Utilities.GenerateDays(req.query.monthlong));
 });
 
@@ -278,8 +266,7 @@ app.get("/calendar/today", async (req, res) => {
       })
   );
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.status(200);
+
   res.json(true);
 });
 

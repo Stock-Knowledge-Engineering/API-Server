@@ -25,6 +25,12 @@ module.exports = function (app) {
         })
     );
 
+    let refreshToken = req.headers['refreshtoken']
+    let token = req.headers['token']
+
+    res.cookie('token', token, {httpOnly: true})
+    res.cookie('refreshToken', refreshToken, {httpOnly: true})
+
     res.json(
       Utilities.CreateResponse(
         req.validToken,
@@ -33,7 +39,7 @@ module.exports = function (app) {
     );
   });
 
-  app.post("/player/experience", async (req, res) => {
+  app.post("/player/experience", Authenticate, async (req, res) => {
     const { userid } = req.body.data;
 
     let result = await Database.Execute((database) =>
@@ -54,7 +60,7 @@ module.exports = function (app) {
     else res.json(Utilities.CreateResponse(false, "Invalid token"));
   });
 
-  app.post("/player/experiences", async (req, res) => {
+  app.post("/player/experiences", Authenticate, async (req, res) => {
     const { userid } = req.body.data;
 
     let result = await Database.Execute((database) =>
@@ -67,6 +73,12 @@ module.exports = function (app) {
         })
     );
 
+    let refreshToken = req.headers['refreshtoken']
+    let token = req.headers['token']
+
+    res.cookie('token', token, {httpOnly: true})
+    res.cookie('refreshToken', refreshToken, {httpOnly: true})
+
     res.json(
       Utilities.CreateResponse(
         req.validToken,
@@ -75,7 +87,7 @@ module.exports = function (app) {
     );
   });
 
-  app.post("/player/add/experience", async (req, res) => {
+  app.post("/player/add/experience", Authenticate, async (req, res) => {
     const { userid, subject, topic, experience } = req.body.data;
 
     let isExist = await Database.Execute((database) =>
@@ -97,6 +109,12 @@ module.exports = function (app) {
         )
       );
 
+    let refreshToken = req.headers['refreshtoken']
+    let token = req.headers['token']
+
+    res.cookie('token', token, {httpOnly: true})
+    res.cookie('refreshToken', refreshToken, {httpOnly: true})
+
     res.json(
       Utilities.CreateResponse(
         req.validToken,
@@ -105,7 +123,7 @@ module.exports = function (app) {
     );
   });
 
-  app.post("/player/total/experience", async (req, res) => {
+  app.post("/player/total/experience", Authenticate, async (req, res) => {
     const { userid } = req.body.data;
 
     let result = await Database.Execute((database) =>
@@ -119,18 +137,25 @@ module.exports = function (app) {
         })
     );
 
-    if(req.validToken)
+    if(req.validToken){
+      let refreshToken = req.headers['refreshtoken']
+      let token = req.headers['token']
+
+      res.cookie('token', token, {httpOnly: true})
+      res.cookie('refreshToken', refreshToken, {httpOnly: true})
+      
       res.json(
         Utilities.CreateResponse(
           result ? true : false,
           result.total ? result.total : 0
         )
       );
+    }
     else 
       res.json(Utilities.CreateResponse(false, 'Invalid token'))
   });
 
-  app.post("/player/level-up", async (req, res) => {
+  app.post("/player/level-up", Authenticate, async (req, res) => {
     const { level, experience, userid } = req.body.data;
 
     await Database.Execute((database) =>
@@ -139,10 +164,17 @@ module.exports = function (app) {
         [level, experience, userid]
       )
     );
+
+    let refreshToken = req.headers['refreshtoken']
+    let token = req.headers['token']
+
+    res.cookie('token', token, {httpOnly: true})
+    res.cookie('refreshToken', refreshToken, {httpOnly: true})
+
     res.json(Utilities.CreateResponse(req.validToken, req.validToken ? null : 'Invalid token'));
   });
 
-  app.post("/player/add/topic/timelapse", async (req, res) => {
+  app.post("/player/add/topic/timelapse", Authenticate, async (req, res) => {
     const { userid, subject, topic, start, end } = req.body.data;
 
     const existId = await Database.Execute((database) =>
@@ -169,10 +201,16 @@ module.exports = function (app) {
       )
     );
 
+    let refreshToken = req.headers['refreshtoken']
+    let token = req.headers['token']
+
+    res.cookie('token', token, {httpOnly: true})
+    res.cookie('refreshToken', refreshToken, {httpOnly: true})
+
     res.json(Utilities.CreateResponse(req.validToken, req.validToken ? null : 'Invalid token'));
   });
 
-  app.post("/player/favoritesubject", async (req, res) => {
+  app.post("/player/favoritesubject", Authenticate, async (req, res) => {
     const { userid } = req.body.data;
 
     let result = await Database.Execute((database) =>
@@ -185,6 +223,12 @@ module.exports = function (app) {
           return JSON.parse(JSON.stringify(row))[0].favoritesubject;
         })
     );
+
+    let refreshToken = req.headers['refreshtoken']
+    let token = req.headers['token']
+
+    res.cookie('token', token, {httpOnly: true})
+    res.cookie('refreshToken', refreshToken, {httpOnly: true})
 
     res.json(Utilities.CreateResponse(req.validToken, req.validToken ? result : 'Invalid Token'));
   });

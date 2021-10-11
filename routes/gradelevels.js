@@ -24,8 +24,6 @@ module.exports = function (app) {
         })
     );
 
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.status(200);
     res.json(result);
   });
 };

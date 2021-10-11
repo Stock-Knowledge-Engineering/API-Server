@@ -93,8 +93,11 @@ module.exports = function (app) {
           })
       );
   
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.status(200);
+      let refreshToken = req.headers['refreshtoken']
+      let token = req.headers['token']
+
+      res.cookie('token', token, {httpOnly: true})
+      res.cookie('refreshToken', refreshToken, {httpOnly: true})
       res.json(Utilities.CreateResponse(result ? true : false, result));
     }
   });
@@ -127,9 +130,7 @@ module.exports = function (app) {
       "ResetPassword",
       `{\"domain\":\"${process.env.DOMAIN}\" ,\"username\":\"${user.username}\", \"name\":\"${user.name}\", \"code\": \"${code}\"}`
     );
-  
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.status(200);
+
     res.json(Utilities.CreateResponse(true, null));
   });
   
@@ -144,8 +145,6 @@ module.exports = function (app) {
         })
     );
   
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.status(200);
     res.json(Utilities.CreateResponse(result ? true : false, result));
   });
 };

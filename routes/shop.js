@@ -149,6 +149,7 @@ module.exports = function (app) {
           return JSON.parse(JSON.stringify(row));
         })
     );
-    res.json(Utilities.CreateResponse(req.validToken ? true : false, req.validToken ? result : 'Invalid token'));
+    
+    res.json(Utilities.CreateResponse(req.validToken ? result : false, req.validToken ? result : 'Invalid token'));
   });
 };

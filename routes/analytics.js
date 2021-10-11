@@ -27,7 +27,7 @@ module.exports = function (app) {
 
     res.json(
       Utilities.CreateResponse(
-        req.validToken && (result || result.length > 0) ? true : false,
+        req.validToken && (result || result.length > 0) ? result : false,
         req.validToken ? result : 'Invalid token'
       )
     );
@@ -46,7 +46,7 @@ module.exports = function (app) {
 
     res.json(
       Utilities.CreateResponse(
-        req.validToken && (result || result.length > 0) ? true : false,
+        req.validToken && (result || result.length > 0) ? result : false,
         req.validToken ? result : 'Invalid token'
       )
     );
@@ -71,14 +71,15 @@ module.exports = function (app) {
 
     res.json(
       Utilities.CreateResponse(
-        req.validToken && (result || result.length > 0) ? true : false,
+        req.validToken && (result || result.length > 0) ? result : false,
         req.validToken ? result : 'Invalid token'
       )
     );
   });
 
 
-  app.get("/analytics/count/student/all", async (req, res) => {
+  app.get("/analytics/count/student/all", Authenticate, async (req, res) => {
+    console.log(req.headers);
     let result = await Database.Execute((database) =>
       database
         .query("SELECT COUNT(*) AS count FROM sk_students")
@@ -89,7 +90,7 @@ module.exports = function (app) {
 
     res.json(
       Utilities.CreateResponse(
-        req.validToken && (result || result.length > 0) ? true : false,
+        req.validToken && (result || result.length > 0) ? result : false,
         req.validToken ? result : 'Invalid token'
       )
     );

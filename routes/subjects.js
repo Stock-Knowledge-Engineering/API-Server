@@ -105,8 +105,10 @@ module.exports = function (app) {
     async (req, res) => {
       const { title, description, color, icon } = req.body;
 
+      let result;
+      
       if (req.validToken) {
-        const result = await Database.Execute((database) =>
+        result = await Database.Execute((database) =>
           database
             .query(`CALL CreateSubject(?, ?, ?, ?)`, [
               title.replace(" ", "-"),
@@ -122,7 +124,7 @@ module.exports = function (app) {
 
       res.json(
         Utilities.CreateResponse(
-          req.validToken ? true : false,
+          req.validToken ? result : false,
           req.validToken ? null : "Invalid token"
         )
       );
